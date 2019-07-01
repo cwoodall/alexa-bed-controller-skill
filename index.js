@@ -162,18 +162,20 @@ async function handleMoveBedFeet(request) {
   Logger.debug('Triggered BedMoveFeet');
   const token = getParticleTokenFromRequest(request);
   const modeToSet = request.directive.payload.mode;
-
+  let timer = 5000;
   let switch_id = BedController.SwitchId.Max;
   let stop = false;
   switch (modeToSet) {
   case 'BedMoveFeet.Up':
     switch_id = BedController.SwitchId.FeetUp;
+    timer = 5000;
     break;
   case 'BedMoveFeet.Stop':
     stop = true;
     break;
   case 'BedMoveFeet.Down':
     switch_id = BedController.SwitchId.FeetDown;
+    timer = 10000;
     break;
   }
   
@@ -182,7 +184,7 @@ async function handleMoveBedFeet(request) {
   } else if (switch_id === BedController.SwitchId.Max) { 
     return AlexaHelpers.formErrorResponse(request, "INVALID_VALUE", "Invalid Bed Position."); 
   } else {
-    const success = await BedController.pressFor(DEVICE_ID, token, switch_id, 30000);
+    const success = await BedController.pressFor(DEVICE_ID, token, switch_id, timer);
     if (!success) {
       return AlexaHelpers.formErrorResponse(request, "INVALID_VALUE", "Invalid Bed Position."); 
     }
@@ -193,6 +195,7 @@ async function handleMoveBedFeet(request) {
 
 async function handleMoveBedHead(request) {
   Logger.debug('Triggered BedMoveHead');
+  let timer = 5000;
   const token = getParticleTokenFromRequest(request);
   const modeToSet = request.directive.payload.mode;
 
@@ -201,12 +204,14 @@ async function handleMoveBedHead(request) {
   switch (modeToSet) {
   case 'BedMoveHead.Up':
     switch_id = BedController.SwitchId.HeadUp;
+    timer = 5000;
     break;
   case 'BedMoveHead.Stop':
     stop = true;
     break;
   case 'BedMoveHead.Down':
     switch_id = BedController.SwitchId.HeadDown;
+    timer = 10000;
     break;
   }
   
@@ -215,7 +220,7 @@ async function handleMoveBedHead(request) {
   } else if (switch_id === BedController.SwitchId.Max) { 
     return AlexaHelpers.formErrorResponse(request, "INVALID_VALUE", "Invalid Bed Position."); 
   } else {
-    const success = await BedController.pressFor(DEVICE_ID, token, switch_id, 30000);
+    const success = await BedController.pressFor(DEVICE_ID, token, switch_id, timer);
     if (!success) {
       return AlexaHelpers.formErrorResponse(request, "INVALID_VALUE", "Invalid Bed Position."); 
     }
